@@ -1,52 +1,52 @@
-const { assert } = require('console');
-const mongoose = require('mongoose');
-const {createHmac ,randomBytes} = require('crypto')
-const { type } = require('os');
+const mongoose = require("mongoose");
+const { createHmac, randomBytes } = require("crypto");
 
 const userSchema = new mongoose.Schema({
+  fullname: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  salt: String,
+  password: {
+    type: String,
+    required: true,
+  },
+});
 
-   fullname:{
-    type:String,
-    required:true
-   } ,
-   email:{
-     type:String,
-    required:true,
-    unique:true
-   },
-   salt:{
-    type:String,
-    required:true
-   },
-   password:{
-    type:String,
-    required:true
-   },
-   ProfilePictureURL:{
-    type:String,
-    default:"/public/images/basic-avatar.avif"
-   },
-   roles:{
-    type:String,
-    enum:["USER","ADMIN"],
-    default:"USER"
-   }
+// 🔹 Hash password before saving
+userSchema.pre("save", function (next) {
+  const user = this;
 
+  if (!user.isModified("password")) return next();
 
-},{timestamps:true});
-userSchema.pre('save', async function (next) {
-    const user = this;
-      if (!user.isModified('password')) { 
-            return next();
-      }
-      const salt = randomBytes(16).toString();
-      const hashedPassword = createHmac('sha256' , salt).update(user.password).digest("hex");
+  const salt = randomBytes(16).toString();
+  const hashedPassword = createHmac("sha256", salt)
+    .update(user.password)
+    .digest("hex");
 
-      this.salt = salt;
-      this.password = hashedPassword
-      next();
-})
+  user.salt = salt;
+  user.password = hashedPassword;
+  next();
+});
 
-const user = mongoose.model('user',userSchema);
+//  Compare password for signin
+userSchema.statics.matchPassword = async function (email, password) {
+  const user = await this.findOne({ email });
+  if (!user) return null;
 
-module.exports = user;
+  const hashedPassword = createHmac("sha256", user.salt)
+    .update(password)
+    .digest("hex");
+
+  if (hashedPassword === user.password) {
+    return user; // success ✅
+  }
+  return null; // wrong password
+};
+
+module.exports = mongoose.model("User", userSchema);

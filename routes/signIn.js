@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const {handleRenderSignIn} = require('../controllers/render');
-router.route('/').get(handleRenderSignIn);
+const {handlePostSignIn} = require('../controllers/signin')
+router.route('/')
+.get(handleRenderSignIn)
+.post(handlePostSignIn);
 
 
 
