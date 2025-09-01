@@ -6,7 +6,9 @@ const port = process.env.PORT;
 const homeRoute = require('./routes/homepage');
 const signinRoute = require('./routes/signin');
 const signUpRoute = require('./routes/signup');
+const cookieParser = require('cookie-parser');
 const DB_CALL = require('./db/dbCall');
+const {checkforAuthenticaionCookie} = require('./middlewares/auth');
 
 const app = express();
 
@@ -16,7 +18,11 @@ app.set('view engine','ejs');
 app.set('views', path.resolve('./views'));
 app.use(express.urlencoded({extended:false}));
 
-app.use('/',homeRoute);
+
+app.use(cookieParser());
+
+
+app.use('/', checkforAuthenticaionCookie('token'),homeRoute);
 app.use('/signin',signinRoute);
 app.use('/signup',signUpRoute);
 

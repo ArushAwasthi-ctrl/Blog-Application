@@ -1,6 +1,6 @@
 
 const User = require('../models/user');
-
+const {createTokenForUser , verifyToken} = require('../services/auth');
 async function handlePostSignIn(req, res) {
     try {
         console.log("Sign in request body:", req.body);
@@ -19,10 +19,15 @@ async function handlePostSignIn(req, res) {
         
         if (currUser) {
             console.log("User signed in successfully:", currUser.email);
+            const token = createTokenForUser(currUser);
+            console.log(token);
+            res.cookie( 'token',token);
             return res.redirect('/');
         } else {
             console.log("Invalid credentials for email:", email);
-            return res.status(401).json({ error: "Invalid email or password" });
+            res.render('signIn',{
+                error:"Incorrect Email  or Password"
+            });
         }
         
     } catch (err) {

@@ -1,5 +1,7 @@
 function handleRenderHome(req,res){
-    res.render("home");
+    res.render("home",{
+        user:req.user
+    });
 }
 function handleRenderSignIn(req,res){
     res.render("signin");

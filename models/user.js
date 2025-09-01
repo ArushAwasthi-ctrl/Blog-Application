@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const { createHmac, randomBytes } = require("crypto");
+const { getDefaultHighWaterMark } = require("stream");
+const { type } = require("os");
 
 const userSchema = new mongoose.Schema({
   fullname: {
@@ -11,11 +13,22 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  salt: String,
+  salt: {
+     type: String,
+  },
   password: {
     type: String,
     required: true,
   },
+  profilePicture:{
+    type:String,
+    default:'../public/images/basic-avatar.avif'
+  },
+  roles:{
+    type:String,
+    enum:["USER","ADMIN"],
+    default:"USER"
+  }
 });
 
 // 🔹 Hash password before saving
@@ -24,7 +37,7 @@ userSchema.pre("save", function (next) {
 
   if (!user.isModified("password")) return next();
 
-  const salt = randomBytes(16).toString();
+  const salt = randomBytes(16).toString('hex');
   const hashedPassword = createHmac("sha256", salt)
     .update(user.password)
     .digest("hex");
