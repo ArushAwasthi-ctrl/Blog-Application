@@ -10,4 +10,9 @@ function handleRenderSignUp(req,res)
 {
     res.render("signup");
 }
-module.exports = {handleRenderHome , handleRenderSignIn , handleRenderSignUp};
+function handleRenderLogout(req,res)
+{
+    res.clearCookie("token");
+    res.redirect("/");
+}
+module.exports = {handleRenderHome , handleRenderSignIn , handleRenderSignUp, handleRenderLogout};

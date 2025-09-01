@@ -6,10 +6,10 @@ const port = process.env.PORT;
 const homeRoute = require('./routes/homepage');
 const signinRoute = require('./routes/signin');
 const signUpRoute = require('./routes/signup');
+const logOutRoute = require('./routes/logout');
 const cookieParser = require('cookie-parser');
 const DB_CALL = require('./db/dbCall');
 const {checkforAuthenticaionCookie} = require('./middlewares/auth');
-
 const app = express();
 
 DB_CALL();
@@ -25,6 +25,7 @@ app.use(cookieParser());
 app.use('/', checkforAuthenticaionCookie('token'),homeRoute);
 app.use('/signin',signinRoute);
 app.use('/signup',signUpRoute);
+app.use('/logout',logOutRoute);
 
 
 

@@ -13,7 +13,7 @@ function checkforAuthenticaionCookie(cookieName)
         try {
             const userPayLoad = verifyToken(tokenCookieValue);  
             req.user = userPayLoad; 
-            next();
+            return next();
         } catch (error) {
             console.error('Token verification failed:', error);
             return res.status(401).json({"error":"Invalid token"});
