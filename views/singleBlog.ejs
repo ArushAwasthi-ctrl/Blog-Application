@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <%- include('./partials/head.ejs') %>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= blogy.title %></title>
 </head>
+
 <body>
   <%- include('./partials/nav.ejs') %>
 
@@ -13,10 +15,7 @@
     <div class="card shadow-lg p-4">
       <!-- Blog Cover Image -->
       <div class="text-center mb-3">
-        <img src="<%= blogy.coverImageUrl %>" 
-             alt="<%= blogy.title %>" 
-             class="img-fluid rounded shadow-sm" 
-             style="max-height: 400px; object-fit: cover; width: 100%;">
+        <img src="<%= blogy.coverImageUrl %>" alt="<%= blogy.title %>" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover; width: 100%;">
       </div>
 
       <!-- Blog Title -->
@@ -24,7 +23,7 @@
 
       <!-- Author & Date -->
       <p class="text-muted">
-        By <%= blogy.createdBy ? blogy.createdBy.username : "Anonymous" %> 
+        By <%= blogy.createdBy ? blogy.createdBy.fullname : "Anonymous" %>
         • <%= blogy.createdAt.toDateString() %>
       </p>
 
@@ -36,7 +35,49 @@
       </div>
     </div>
   </div>
+  <!-- Comments Section -->
+  <div class="container mt-4">
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <h4>Comments (<%= comments ? comments.length : 0 %>)</h4>
+      </div>
+      
+      <div class="card-body">
+        <!-- Add Comment Form (only if logged in) -->
+        <% if (locals.user) { %>
+          <form action="/comment/<%= blogy._id %>" method="post" class="mb-4 p-3 border rounded">
+            <div class="mb-3">
+              <label for="content" class="form-label">Add a Comment</label>
+              <textarea class="form-control" id="content" name="content" rows="3" placeholder="Write your comment here..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Post Comment</button>
+          </form>
+        <% } else { %>
+          <p class="text-muted mb-4">Please <a href="/signin">sign in</a> to leave a comment.</p>
+        <% } %>
+        
+        <!-- Display Comments -->
+        <% if (comments && comments.length > 0) { %>
+          <% comments.forEach(comment => { %>
+            <div class="comment mb-3 p-3 border-start border-primary border-3 bg-light rounded">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <strong><%= comment.createdBy ? comment.createdBy.fullname : "Anonymous" %></strong>
+                  <small class="text-muted ms-2"><%= comment.createdAt.toDateString() %> at <%= comment.createdAt.toLocaleTimeString() %></small>
+                </div>
+              </div>
+              <p class="mt-2 mb-0"><%= comment.content %></p>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p class="text-muted text-center">No comments yet. Be the first to comment!</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
 
   <%- include('./partials/scripts.ejs') %>
 </body>
+
 </html>
