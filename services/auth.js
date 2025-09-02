@@ -6,6 +6,7 @@ function createTokenForUser(user)
         return null;
     }
     const payload = {
+         _id: user._id,              // ✅ Added user ID - CRITICAL for blog linking
          fullname:user.fullname,
          email:user.email,
          profilePicture:user.profilePicture,

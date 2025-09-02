@@ -14,20 +14,32 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 async function handlePostBlogReq(req, res) {
-  console.log("Body starts from here");
+  console.log("=== Blog Creation Debug ===");
+  console.log("User from req.user:", req.user);
+  console.log("User ID:", req.user?._id);
+  console.log("User authenticated:", !!req.user);
+  
   const temp = req.body;
   const file = req.file;
 
   console.log("File details:", file);
   console.log("Generated image URL:", `/public/${file.filename}`);
 
+  // Check if user is authenticated
+  if (!req.user || !req.user._id) {
+    console.error("❌ No authenticated user found!");
+    return res.status(401).redirect('/signin');
+  }
+
   try {
     const tempBlog = await blog.create({
       title: temp.title,
       body: temp.body,
       coverImageUrl: `/public/${file.filename}`,
-      createdBy: req.user._id, // make sure req.user exists
+      createdBy: req.user._id,
     });
+    
+    console.log("✅ Blog created successfully with createdBy:", tempBlog.createdBy);
 
     console.log("Blog created with image URL:", tempBlog.coverImageUrl);
 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('./partials/head.ejs') %>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= blogy.title %></title>
+</head>
+<body>
+  <%- include('./partials/nav.ejs') %>
+
+  <div class="container mt-4">
+    <div class="card shadow-lg p-4">
+      <!-- Blog Cover Image -->
+      <div class="text-center mb-3">
+        <img src="<%= blogy.coverImageUrl %>" 
+             alt="<%= blogy.title %>" 
+             class="img-fluid rounded shadow-sm" 
+             style="max-height: 400px; object-fit: cover; width: 100%;">
+      </div>
+
+      <!-- Blog Title -->
+      <h1 class="fw-bold"><%= blogy.title %></h1>
+
+      <!-- Author & Date -->
+      <p class="text-muted">
+        By <%= blogy.createdBy ? blogy.createdBy.username : "Anonymous" %> 
+        • <%= blogy.createdAt.toDateString() %>
+      </p>
+
+      <hr>
+
+      <!-- Blog Content -->
+      <div class="blog-body fs-5" style="white-space: pre-line;">
+        <%= blogy.body %>
+      </div>
+    </div>
+  </div>
+
+  <%- include('./partials/scripts.ejs') %>
+</body>
+</html>

@@ -1,3 +1,4 @@
+const { error } = require('console');
 const blog = require('../models/blog');
  async function  handleRenderHome(req,res){
     try {
@@ -35,4 +36,18 @@ function handleRenderBlog(req,res){
         user:req.user
     });
 };
-module.exports = {handleRenderHome , handleRenderSignIn , handleRenderSignUp, handleRenderLogout , handleRenderBlog};
+
+async function handleRenderDynamicBlog(req,res) {
+    if(!req.params.id)
+    {
+        throw new error;
+    }
+    else{
+            const blogy =  await blog.findById(req.params.id) 
+            res.render("singleBlog",{
+                user:req.user,
+                blogy
+            })
+    }
+}
+module.exports = {handleRenderHome , handleRenderSignIn , handleRenderSignUp, handleRenderLogout , handleRenderBlog ,handleRenderDynamicBlog};
