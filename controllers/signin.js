@@ -21,7 +21,12 @@ async function handlePostSignIn(req, res) {
             console.log("User signed in successfully:", currUser.email);
             const token = createTokenForUser(currUser);
             console.log(token);
-            res.cookie( 'token',token);
+            res.cookie('token', token, {
+                httpOnly: true,    // Prevents XSS attacks
+                secure: false,     // Set to true in production with HTTPS
+                sameSite: 'lax'    // CSRF protection
+                // No maxAge or expires = session cookie (expires when tab closes)
+            });
             return res.redirect('/');
         } else {
             console.log("Invalid credentials for email:", email);

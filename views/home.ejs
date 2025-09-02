@@ -1,14 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('./partials/head.ejs') %>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <%- include('./partials/head.ejs') %>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
 </head>
 <body>
-    <%- include('./partials/nav.ejs') %>
-    <%= JSON.stringify(locals.user) %>
-  <%- include('./partials/scripts.ejs') %>  
+  <%- include('./partials/nav.ejs') %>
+
+  <div class="container mt-4">
+    <% if (user) { %>
+      <% if (blogs && blogs.length > 0) { %>
+        <div class="row g-3">
+          <% blogs.forEach(blog => { %>
+            <div class="col-md-4 col-sm-6 d-flex">
+              <div class="card flex-fill shadow-sm">
+                <img src="<%= blog.coverImageUrl %>" class="card-img-top" alt="Blog Image">
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title"><%= blog.title %></h5>
+                  <p class="card-text flex-grow-1"><%= blog.body.substring(0, 100) %>...</p>
+                  
+                  <% if (blog.createdBy) { %>
+                    <% if (blog.createdBy.fullname) { %>
+                      <small class="text-muted mb-2">By: <%= blog.createdBy.fullname %></small>
+                    <% } else { %>
+                      <small class="text-muted mb-2">By: Anonymous</small>
+                    <% } %>
+                  <% } else { %>
+                    <small class="text-muted mb-2">By: Unknown Author</small>
+                  <% } %>
+                  
+                  <a href="/blog/<%= blog._id %>" class="btn btn-primary mt-auto">Read more</a>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="text-center p-4">
+          <p>No blogs yet. Be the first to post!</p>
+        </div>
+      <% } %>
+    <% } else { %>
+      <div class="text-center p-4">
+        <p>Please <a href="/signin">sign in</a> to view blogs.</p>
+      </div>
+    <% } %>
+  </div>
+
+  <%- include('./partials/scripts.ejs') %>
 </body>
 </html>

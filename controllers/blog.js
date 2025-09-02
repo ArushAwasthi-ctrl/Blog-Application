@@ -18,19 +18,24 @@ async function handlePostBlogReq(req, res) {
   const temp = req.body;
   const file = req.file;
 
+  console.log("File details:", file);
+  console.log("Generated image URL:", `/public/${file.filename}`);
+
   try {
     const tempBlog = await blog.create({
       title: temp.title,
       body: temp.body,
-      coverImageUrl: `./public/${file.filename}`,
+      coverImageUrl: `/public/${file.filename}`,
       createdBy: req.user._id, // make sure req.user exists
     });
 
+    console.log("Blog created with image URL:", tempBlog.coverImageUrl);
+
     // redirect to that blog's page
-    return res.redirect(`/blogs/${tempBlog._id}`);
+    return res.redirect("/");
   } catch (error) {
     console.error(error);
-    return res.redirect("/add-new");
+    return res.redirect("/");
   }
 }
 module.exports = { handlePostBlogReq, upload };
