@@ -27,7 +27,7 @@ async function handlePostBlogReq(req, res) {
 
   // Check if user is authenticated
   if (!req.user || !req.user._id) {
-    console.error("❌ No authenticated user found!");
+    console.error(" No authenticated user found!");
     return res.status(401).redirect('/signin');
   }
 
@@ -39,7 +39,7 @@ async function handlePostBlogReq(req, res) {
       createdBy: req.user._id,
     });
     
-    console.log("✅ Blog created successfully with createdBy:", tempBlog.createdBy);
+    console.log(" Blog created successfully with createdBy:", tempBlog.createdBy);
 
     console.log("Blog created with image URL:", tempBlog.coverImageUrl);
 
