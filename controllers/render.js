@@ -15,4 +15,9 @@ function handleRenderLogout(req,res)
     res.clearCookie("token");
     res.redirect("/");
 }
-module.exports = {handleRenderHome , handleRenderSignIn , handleRenderSignUp, handleRenderLogout};
+function handleRenderBlog(req,res){
+    res.render("blog",{
+        user:req.user
+    });
+};
+module.exports = {handleRenderHome , handleRenderSignIn , handleRenderSignUp, handleRenderLogout , handleRenderBlog};
